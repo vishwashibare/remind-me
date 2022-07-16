@@ -1,7 +1,10 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:remind_me/main_Screens/Today_page/Add_Task.dart';
+import 'package:remind_me/main_Screens/Today_page/lists_printing.dart';
+import 'package:remind_me/model/work_list.dart';
 
 class today extends StatefulWidget {
   const today({Key? key}) : super(key: key);
@@ -13,6 +16,13 @@ class today extends StatefulWidget {
 class _todayState extends State<today> {
   String formatter = new DateFormat.yMMMMd('en_US').format(new DateTime.now());
   String taskPop = "close";
+  final List<worklist> _userTransactions = [];
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((tx) => tx.id == id);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,57 +45,23 @@ class _todayState extends State<today> {
               ],
             ),
           ),
-          taskWidget(Color(0xfff96060), "Meeting with Sommeone", "9:00 AM"),
-          taskWidget(Colors.blue, "Meeting with Sommeone", "9:00 AM"),
-          taskWidget(Colors.green, "Take your medicines", "9:00 AM"),
+        //  remindme_list(_userTransactions, _deleteTransaction),
+         
         ],
       ),
-      
-      Container(
-        alignment: Alignment.bottomRight,
-        padding: EdgeInsets.all(20),
-        child: CircularButton(
-          color: Colors.yellow.shade800,
-          width: 60,
-          height: 60,
-          icon: Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-          onClick: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (BuildContext context) => add_task()));
-          },
-        ),
-      ),
-    ]));
-  }
-
-// just for openaing the menu of adding task
-
-}
-
-class CircularButton extends StatelessWidget {
-  final double width;
-  final double height;
-  final Color color;
-  final Icon icon;
-  final VoidCallback onClick;
-
-  CircularButton(
-      {required this.color,
-      required this.width,
-      required this.height,
-      required this.icon,
-      required this.onClick});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-      width: width,
-      height: height,
-      child: IconButton(icon: icon, enableFeedback: true, onPressed: onClick),
+      // Container(
+      //   alignment: Alignment.bottomRight,
+      //   padding: EdgeInsets.all(20),
+      //   child: FloatingActionButton(
+      //       child: Icon(Icons.add),
+      //       backgroundColor: Colors.yellow.shade800,
+      //       elevation: 5,
+      //       onPressed: () => Navigator.of(context).pushReplacement(
+      //           MaterialPageRoute(
+      //               builder: (BuildContext context) => add_task()))),
+      // ),
+    ]
+    )
     );
   }
 }
@@ -166,3 +142,4 @@ Slidable taskWidget(Color color, String title, String time) {
 }
 
 void doNothing(BuildContext context) {}
+*/

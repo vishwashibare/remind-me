@@ -1,111 +1,9 @@
-/*
-import 'package:flutter/material.dart';
-
-class mainscreen extends StatefulWidget {
-  const mainscreen({super.key});
-
-  @override
-  State<mainscreen> createState() => _mainscreenState();
-}
-
-class _mainscreenState extends State<mainscreen> {
-  @override
-  Widget build(BuildContext context) {
-    
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(fontFamily: 'avenir'),
-      home: Scaffold(
-        body: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppBar(
-                  backgroundColor: Colors.yellow.shade800,
-                  elevation: 0,
-                  title: Text(
-                    "Work List...",
-                    style: TextStyle(fontSize: 30, color: Colors.black),
-                  ),
-                  actions: [
-                    IconButton(
-                        onPressed: (() {}),
-                        icon: Icon(
-                          Icons.short_text,
-                          color: Colors.black,
-                          size: 30,
-                        ))
-                  ],
-                ),
-                Container(
-                  height: 70,
-                  color: Colors.yellow.shade800,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                               
-                              },
-                              child: Text(
-                                "Today",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              height: 4,
-                              width: 120,
-                              color: Colors.white
-                                  
-                            )
-                          ],
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            InkWell(
-                              onTap: () {},
-                              child: Text(
-                                "Monthly",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              height: 4,
-                              width: 120,
-                              color: Colors.white
-                                
-                            )
-                          ],
-                        )
-                      ]),
-                )
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-*/
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:remind_me/authentication_pages/login_page.dart';
-import 'package:remind_me/main_Screens/monthly_page.dart';
-import 'package:remind_me/main_Screens/Today_page/today_page.dart';
+import 'package:remind_me/main_Screens/Today_page/Add_Task.dart';
+import 'package:remind_me/main_Screens/Today_page/lists_printing.dart';
+import 'package:remind_me/model/work_list.dart';
 
 class TabBarPage extends StatefulWidget {
   const TabBarPage({Key? key}) : super(key: key);
@@ -114,98 +12,73 @@ class TabBarPage extends StatefulWidget {
   _TabBarPageState createState() => _TabBarPageState();
 }
 
+
+
 class _TabBarPageState extends State<TabBarPage>
     with SingleTickerProviderStateMixin {
-  late TabController tabController;
+      final List<Worklists> _userTransactions = [
+   
+  ];
+  List<Worklists> get _recentTransactions {
+    return _userTransactions.where((tx) {
+      return tx.date.isAfter(
+        DateTime.now().subtract(
+          Duration(days: 7),
+        ),
+      );
+    }).toList();
+  }
+  
+  void _addNewTransaction(
+      String txTitle, String txAmount, DateTime chosenDate) {
+    final newTx = Worklists(
+      title: txTitle,
+      description: txAmount,
+      date: chosenDate,
+      id: DateTime.now().toString(),
+    );
 
-  @override
-  void initState() {
-    tabController = TabController(length: 2, vsync: this);
-    super.initState();
+    setState(() {
+      _userTransactions.add(newTx);
+    });
+  }
+ 
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((tx) => tx.id == id);
+    });
   }
 
-  @override
-  void dispose() {
-    tabController.dispose();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.black38,
-            size: 35,
-          ),
-          onPressed: () {Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => login_page(),
-                          ));},
-        ),
-        backgroundColor: Colors.yellow.shade800,
-        elevation: 0,
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.yellow.shade800,
+          
         title: Text(
-          "Work List...",
-          style: TextStyle(fontSize: 30, color: Colors.black),
+          'Work List...',
+          style: TextStyle(color: Colors.black,fontSize: 25),
         ),
-        
-      ),
-      body: Stack(
-        children: [
-          Column(
-            children: [
-            
-              Container(
-                // height: 50,
-                width: MediaQuery.of(context).size.height,
-                decoration: BoxDecoration(
-                  color: Colors.yellow.shade800,
-                  //  borderRadius: BorderRadius.circular(5)
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(5),
-                      child: TabBar(
-                        unselectedLabelColor: Colors.white,
-                        labelColor: Colors.black,
-                        indicatorColor: Colors.white,
-                        indicatorWeight: 2,
-                        indicator: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        controller: tabController,
-                        tabs: [
-                          Tab(
-                            text: 'Today',
-                          ),
-                          Tab(
-                            text: 'Monthly',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: TabBarView(
-                  controller: tabController,
-                  children: [
-                    today(),
-                    monthly(),
-                  ],
-                ),
-              )
-            ],
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.account_circle,color: Colors.black,size: 30),
+            onPressed: () {},
           ),
         ],
       ),
-    );
+        body: remind_List(_userTransactions, _deleteTransaction),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: FloatingActionButton(
+                child: Icon(Icons.add),
+                backgroundColor: Colors.yellow.shade800,
+                onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => addnewtask(_addNewTransaction),
+                          ))
+              ),
+      );
   }
 }
